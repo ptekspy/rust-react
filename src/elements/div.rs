@@ -5,18 +5,18 @@ use crate::elements::{
 use crate::traits::child::Child;
 use crate::traits::clickable::no_clickable::NoClickable;
 use crate::traits::element::Element;
+use crate::elements::element::ElementData;
 
 pub struct Div<C: Child> {
-    pub attributes: Attributes,
-    pub children: Children<C>,
+    pub data: ElementData<C>,
 }
 
 impl<C: Child> Child for Div<C> {
     fn render(&self) -> String {
         format!(
             "<div{}>{}</div>",
-            self.attributes.render(),
-            self.children.render()
+            self.data.attributes.render(),
+            self.data.children.render()
         )
     }
 }
@@ -27,10 +27,10 @@ impl<C: Child> Element for Div<C> {
     type Child = C;
 
     fn attributes(&self) -> &Attributes {
-        &self.attributes
+        &self.data.attributes
     }
 
     fn children(&self) -> &Children<Self::Child> {
-        &self.children
+        &self.data.children
     }
 }
