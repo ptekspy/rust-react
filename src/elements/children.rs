@@ -1,4 +1,7 @@
-use crate::traits::child::Child;
+use crate::traits::{
+    child::Child,
+    clickable::no_clickable::NoClickable,
+};
 
 pub struct Empty;
 
@@ -45,3 +48,9 @@ impl<T: Child> Child for Children<T> {
         self.items.render()
     }
 }
+
+impl NoClickable for Empty {}
+
+impl<H: NoClickable, T: NoClickable> NoClickable for More<H, T> {}
+
+impl<T: NoClickable> NoClickable for Children<T> {}
