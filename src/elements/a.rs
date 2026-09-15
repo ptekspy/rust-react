@@ -1,4 +1,5 @@
 use crate::elements::children::Children;
+use crate::traits::element::Element;
 use crate::traits::{
     child::Child,
     clickable::{clickable::Clickable, no_clickable::NoClickable},
@@ -20,3 +21,4 @@ impl<C: NoClickable> Child for A<C> {
 }
 
 impl<C: NoClickable> Clickable for A<C> {}
+impl<C: NoClickable> Element for A<C> {}
