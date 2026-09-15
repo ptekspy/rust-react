@@ -1,3 +1,5 @@
+use std::ops::{Deref, DerefMut};
+
 use super::{AttributeNameError, Element};
 
 pub struct HTMLElement {
@@ -55,7 +57,10 @@ impl HTMLElement {
         self.element.set_attribute(name, value)
     }
 
-    pub fn remove_attribute(&mut self, name: &str) -> Option<super::Attribute> {
+    pub fn remove_attribute(
+        &mut self,
+        name: &str,
+    ) -> Option<super::Attribute> {
         self.element.remove_attribute(name)
     }
 
@@ -377,6 +382,20 @@ impl HTMLElement {
     }
 }
 
+impl Deref for HTMLElement {
+    type Target = Element;
+
+    fn deref(&self) -> &Self::Target {
+        &self.element
+    }
+}
+
+impl DerefMut for HTMLElement {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.element
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::HTMLElement;
@@ -460,5 +479,20 @@ mod tests {
             element.item_type(),
             Some("https://schema.org/Product")
         );
+    }
+
+    #[test]
+    fn dereferences_through_element_to_node() {
+        let element = HTMLElement::new("div");
+
+        assert_eq!(element.node_name(), "div");
+        assert_eq!(element.node_type_value(), 1);
+    }
+
+    #[test]
+    fn dereferences_through_node_to_event_target() {
+        let mut element = HTMLElement::new("div");
+
+        element.add_event_listener("click", |_| {});
     }
 }

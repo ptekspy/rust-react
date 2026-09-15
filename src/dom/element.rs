@@ -1,3 +1,5 @@
+use std::ops::{Deref, DerefMut};
+
 use super::{Attribute, AttributeNameError, Node, NodeType};
 
 pub struct Attributes {
@@ -231,6 +233,20 @@ impl Element {
     }
 }
 
+impl Deref for Element {
+    type Target = Node;
+
+    fn deref(&self) -> &Self::Target {
+        &self.node
+    }
+}
+
+impl DerefMut for Element {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.node
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::Element;
@@ -359,5 +375,20 @@ mod tests {
         assert!(removed.is_some());
         assert_eq!(element.get_attribute("id"), None);
         assert!(!element.has_attribute("id"));
+    }
+
+    #[test]
+    fn dereferences_to_node() {
+        let element = Element::new("div");
+
+        assert_eq!(element.node_name(), "div");
+        assert_eq!(element.node_type_value(), 1);
+    }
+
+    #[test]
+    fn dereferences_through_node_to_event_target() {
+        let mut element = Element::new("div");
+
+        element.add_event_listener("click", |_| {});
     }
 }

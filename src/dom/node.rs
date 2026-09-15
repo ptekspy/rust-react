@@ -1,3 +1,5 @@
+use std::ops::{Deref, DerefMut};
+
 use super::EventTarget;
 
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -65,6 +67,20 @@ impl Node {
     }
 }
 
+impl Deref for Node {
+    type Target = EventTarget;
+
+    fn deref(&self) -> &Self::Target {
+        &self.event_target
+    }
+}
+
+impl DerefMut for Node {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.event_target
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{Node, NodeType};
@@ -100,5 +116,12 @@ mod tests {
 
         node.event_target_mut()
             .add_event_listener("click", |_| {});
+    }
+
+    #[test]
+    fn dereferences_to_event_target() {
+        let mut node = Node::new(NodeType::Element, "div");
+
+        node.add_event_listener("click", |_| {});
     }
 }

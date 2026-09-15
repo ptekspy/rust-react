@@ -1,3 +1,5 @@
+use std::ops::{Deref, DerefMut};
+
 use super::HTMLElement;
 
 pub struct HTMLDivElement {
@@ -18,71 +20,19 @@ impl HTMLDivElement {
     pub fn html_element_mut(&mut self) -> &mut HTMLElement {
         &mut self.html_element
     }
+}
 
-    pub fn element(&self) -> &super::Element {
-        self.html_element.element()
+impl Deref for HTMLDivElement {
+    type Target = HTMLElement;
+
+    fn deref(&self) -> &Self::Target {
+        &self.html_element
     }
+}
 
-    pub fn element_mut(&mut self) -> &mut super::Element {
-        self.html_element.element_mut()
-    }
-
-    pub fn node(&self) -> &super::Node {
-        self.html_element.element().node()
-    }
-
-    pub fn node_mut(&mut self) -> &mut super::Node {
-        self.html_element.element_mut().node_mut()
-    }
-
-    pub fn id(&self) -> Option<&str> {
-        self.html_element.id()
-    }
-
-    pub fn set_id(
-        &mut self,
-        value: impl Into<String>,
-    ) -> Result<(), super::AttributeNameError> {
-        self.html_element.set_id(value)
-    }
-
-    pub fn class_name(&self) -> Option<&str> {
-        self.html_element.class_name()
-    }
-
-    pub fn set_class_name(
-        &mut self,
-        value: impl Into<String>,
-    ) -> Result<(), super::AttributeNameError> {
-        self.html_element.set_class_name(value)
-    }
-
-    pub fn get_attribute(&self, name: &str) -> Option<&str> {
-        self.html_element.get_attribute(name)
-    }
-
-    pub fn set_attribute(
-        &mut self,
-        name: impl Into<String>,
-        value: impl Into<String>,
-    ) -> Result<(), super::AttributeNameError> {
-        self.html_element.set_attribute(name, value)
-    }
-
-    pub fn has_attribute(&self, name: &str) -> bool {
-        self.html_element.has_attribute(name)
-    }
-
-    pub fn remove_attribute(&mut self, name: &str) -> Option<super::Attribute> {
-        self.html_element.remove_attribute(name)
-    }
-
-    pub fn tag_name(&self) -> String {
-        self.html_element.tag_name()
-    }
-
-    pub fn local_name(&self) -> &str {
-        self.html_element.local_name()
+impl DerefMut for HTMLDivElement {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.html_element
     }
 }
 
@@ -118,10 +68,36 @@ mod tests {
     }
 
     #[test]
-    fn exposes_lower_dom_layers() {
+    fn inherits_element_behaviour() {
+        let mut div = HTMLDivElement::new();
+
+        div.set_attribute("role", "main").unwrap();
+
+        assert!(div.has_attribute("role"));
+        assert_eq!(div.get_attribute("role"), Some("main"));
+    }
+
+    #[test]
+    fn inherits_node_behaviour() {
         let div = HTMLDivElement::new();
 
-        assert_eq!(div.element().local_name(), "div");
+        assert_eq!(div.node_type_value(), 1);
+        assert_eq!(div.node_name(), "div");
+    }
+
+    #[test]
+    fn inherits_event_target_behaviour() {
+        let mut div = HTMLDivElement::new();
+
+        div.add_event_listener("click", |_| {});
+    }
+
+    #[test]
+    fn exposes_underlying_layers() {
+        let div = HTMLDivElement::new();
+
+        assert_eq!(div.html_element().tag_name(), "div");
+        assert_eq!(div.element().tag_name(), "div");
         assert_eq!(div.node().node_name(), "div");
     }
 }
