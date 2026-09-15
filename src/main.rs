@@ -1,7 +1,8 @@
+mod dom;
 mod elements;
+mod globals;
 mod traits;
 mod values;
-mod globals;
 
 use elements::attributes::{Attribute, Attributes};
 
