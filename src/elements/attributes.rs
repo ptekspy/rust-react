@@ -4,6 +4,9 @@ use crate::globals::{
     more::More,
 };
 
+#[derive(Clone, Copy)]
+pub struct AttributeRenderer;
+
 pub struct Attribute {
     pub name: String,
     pub value: String,
@@ -18,8 +21,8 @@ impl Attribute {
     }
 }
 
-impl RenderList for Attribute {
-    fn render(&self) -> String {
+impl RenderList<AttributeRenderer> for Attribute {
+    fn render(&self, _renderer: AttributeRenderer) -> String {
         format!(" {}=\"{}\"", self.name, self.value)
     }
 }
@@ -45,8 +48,11 @@ impl<T> Attributes<T> {
     }
 }
 
-impl<T: RenderList> Attributes<T> {
+impl<T> Attributes<T>
+where
+    T: RenderList<AttributeRenderer>,
+{
     pub fn render(&self) -> String {
-        self.items.render()
+        self.items.render(AttributeRenderer)
     }
 }
