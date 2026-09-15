@@ -139,7 +139,10 @@ impl NodeStore {
         Ok(true)
     }
 
-    pub fn parent(&self, node_id: NodeId) -> Result<Option<NodeId>, NodeStoreError> {
+    pub fn parent(
+        &self,
+        node_id: NodeId,
+    ) -> Result<Option<NodeId>, NodeStoreError> {
         self.require_node(node_id)?;
 
         Ok(self
@@ -149,7 +152,10 @@ impl NodeStore {
             .parent)
     }
 
-    pub fn children(&self, node_id: NodeId) -> Result<&[NodeId], NodeStoreError> {
+    pub fn children(
+        &self,
+        node_id: NodeId,
+    ) -> Result<&[NodeId], NodeStoreError> {
         self.require_node(node_id)?;
 
         Ok(&self
@@ -159,7 +165,10 @@ impl NodeStore {
             .children)
     }
 
-    pub fn child_count(&self, node_id: NodeId) -> Result<usize, NodeStoreError> {
+    pub fn child_count(
+        &self,
+        node_id: NodeId,
+    ) -> Result<usize, NodeStoreError> {
         Ok(self.children(node_id)?.len())
     }
 
@@ -185,7 +194,10 @@ impl NodeStore {
         }
     }
 
-    fn require_parent(&self, node_id: NodeId) -> Result<(), NodeStoreError> {
+    fn require_parent(
+        &self,
+        node_id: NodeId,
+    ) -> Result<(), NodeStoreError> {
         if self.contains(node_id) {
             Ok(())
         } else {
@@ -193,7 +205,10 @@ impl NodeStore {
         }
     }
 
-    fn require_child(&self, node_id: NodeId) -> Result<(), NodeStoreError> {
+    fn require_child(
+        &self,
+        node_id: NodeId,
+    ) -> Result<(), NodeStoreError> {
         if self.contains(node_id) {
             Ok(())
         } else {
@@ -223,6 +238,14 @@ impl NodeStore {
     }
 }
 
+impl Default for NodeStore {
+    fn default() -> Self {
+        Self {
+            relationships: HashMap::new(),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{NodeStore, NodeStoreError};
@@ -246,6 +269,15 @@ mod tests {
         }
 
         (store, ids)
+    }
+
+    #[test]
+    fn creates_empty_store() {
+        let store = NodeStore::new();
+
+        let node = node();
+
+        assert!(!store.contains(node.id()));
     }
 
     #[test]
@@ -337,9 +369,7 @@ mod tests {
         let second_parent = ids[1];
         let child = ids[2];
 
-        store
-            .append_child(first_parent, child)
-            .unwrap();
+        store.append_child(first_parent, child).unwrap();
 
         assert_eq!(
             store.append_child(second_parent, child),
