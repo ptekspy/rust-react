@@ -18,11 +18,11 @@ impl Children<Empty> {
 }
 
 impl<T> Children<T> {
-    pub fn push<H>(self, head: H) -> Children<More<H, T>> {
+    pub fn push<H>(self, head: H) -> Children<More<T, H>> {
         Children {
             items: More {
-                head,
-                tail: self.items,
+                head: self.items,
+                tail: head,
             },
         }
     }
