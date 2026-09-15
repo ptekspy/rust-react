@@ -1,5 +1,5 @@
 use crate::{
-    elements::child_renderer::{render_child, ChildRenderer},
+    elements::child_renderer::ChildRenderer,
     globals::{
         empty::Empty,
         list::RenderList,
@@ -32,9 +32,12 @@ impl<T> Children<T> {
     }
 }
 
-impl<T: Child> Child for Children<T> {
+impl<T> Child for Children<T>
+where
+    T: Child + RenderList<ChildRenderer>,
+{
     fn render(&self) -> String {
-        self.items.render(ChildRenderer)
+        RenderList::render(&self.items, ChildRenderer)
     }
 }
 
