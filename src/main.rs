@@ -1,11 +1,14 @@
 mod elements;
 mod traits;
 mod values;
+mod globals;
 
-use elements::attributes::Attribute;
+use elements::attributes::{Attribute, Attributes};
 
 fn main() {
-    let href = Attribute::new("href", "https://example.com");
+    let attributes = Attributes::new()
+        .push(Attribute::new("href", "https://example.com"))
+        .push(Attribute::new("target", "_blank"));
 
-    println!("{}", href.render());
+    println!("{}", attributes.render());
 }

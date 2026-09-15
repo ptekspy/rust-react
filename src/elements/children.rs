@@ -1,14 +1,7 @@
-use crate::traits::{
+use crate::{globals::{empty::Empty, more::More}, traits::{
     child::Child,
     clickable::no_clickable::NoClickable,
-};
-
-pub struct Empty;
-
-pub struct More<H, T> {
-    pub head: H,
-    pub tail: T,
-}
+}};
 
 pub struct Children<T = Empty> {
     pub items: T,
