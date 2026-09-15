@@ -1,7 +1,14 @@
-use crate::{globals::{empty::Empty, more::More}, traits::{
-    child::Child,
-    clickable::no_clickable::NoClickable,
-}};
+use crate::{
+    globals::{
+        empty::Empty,
+        list::RenderList,
+        more::More,
+    },
+    traits::{
+        child::Child,
+        clickable::no_clickable::NoClickable,
+    },
+};
 
 pub struct Children<T = Empty> {
     pub items: T,
@@ -24,26 +31,10 @@ impl<T> Children<T> {
     }
 }
 
-impl Child for Empty {
-    fn render(&self) -> String {
-        String::new()
-    }
-}
-
-impl<H: Child, T: Child> Child for More<H, T> {
-    fn render(&self) -> String {
-        format!("{}{}", self.head.render(), self.tail.render())
-    }
-}
-
 impl<T: Child> Child for Children<T> {
     fn render(&self) -> String {
         self.items.render()
     }
 }
-
-impl NoClickable for Empty {}
-
-impl<H: NoClickable, T: NoClickable> NoClickable for More<H, T> {}
 
 impl<T: NoClickable> NoClickable for Children<T> {}
